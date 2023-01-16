@@ -1,0 +1,17 @@
+# Activation of the URL Rewriting
+Options +FollowSymlinks
+RewriteEngine On
+
+Header set Access-Control-Allow-Origin "*"
+Header set Access-Control-Allow-Methods "GET,PUT,POST,DELETE"
+Header set Access-Control-Allow-Headers "Content-Type, Authorization"
+# RewriteBase equivalent
+RewriteCond %{HTTP_HOST} !^localhost$
+RewriteRule . - [E=REWRITEBASE:/]
+# Rewriting
+RewriteRule ^(application|system|\.svn) %{ENV:REWRITEBASE}index.php/$1 [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php/$1 [QSA,L]
+# Disable server signature #
+ServerSignature Off
