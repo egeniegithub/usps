@@ -93,3 +93,26 @@ if (!function_exists('getUserIP')) {
         return strpos($ipaddress, ',') !== FALSE ? explode(',', $ipaddress)[0] : $ipaddress;
     }
 }
+
+
+if(!function_exists('connectToMySQLi')){
+    /**
+     * Creates MySQLi connection
+     * 
+     * @param string $host
+     * @param string $user
+     * @param string $pass
+     * @param string $db
+     * @return resource
+     */
+    function connectToMySQLi($host, $user, $pass, $db)
+    {
+        $mysqli = new mysqli($host, $user, $pass, $db);
+    
+        if ($mysqli->connect_error) {
+    
+            die('Connect Error (' . mysqli_connect_errno() . ') ' . mysqli_connect_error());
+        }
+        return $mysqli;
+    }
+}
