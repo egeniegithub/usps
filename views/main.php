@@ -8,19 +8,15 @@
     <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.5.0/css/bootstrap4-toggle.min.css" rel="stylesheet">
 
     <link rel="stylesheet" href="<?= baseUrl('assets/css/custom.css'); ?>">
-
-
 </head>
 
 <body>
-
-
     <div class="wrapper">
 
         <div class="address-container">
             <div class="card card-address mx-auto">
                 <div class="card-body">
-                    <form class="form-horizontal" action="#" method="post" id="address_form">
+                    <form class="form-horizontal" action="#" method="post" id="jsMailingAddressForm">
 
                         <h1>Address Validator </h1>
                         <p>Validate/Standardizes address using USPS</p>
@@ -29,56 +25,53 @@
                         <fieldset class="clearfix">
 
                             <div class="input-group-address">
-                                <label for="address1">Address Line 1</label>
+                                <label for="jsAddress">Address Line 1</label>
 
                                 <div class="input-group">
-                                    <input id="address1" type="text" Placeholder="Suite 6100">
+                                    <input id="jsAddress" type="text" Placeholder="Suite 6100">
 
                                 </div>
                             </div>
                             <div class="input-group-address">
-                                <label for="address2">Address Line 2</label>
+                                <label for="jsAddress2">Address Line 2</label>
 
                                 <div class="input-group">
-                                    <input id="address2" type="text" Placeholder="185 Berry St">
+                                    <input id="jsAddress2" type="text" Placeholder="185 Berry St">
 
                                 </div>
                             </div>
                             <div class="input-group-address">
-                                <label for="city">City</label>
+                                <label for="jsCity">City</label>
 
                                 <div class="input-group">
-                                    <input id="city" type="text" Placeholder="San Francisco">
+                                    <input id="jsCity" type="text" Placeholder="San Francisco">
 
                                 </div>
                             </div>
                             <div class="input-group-address">
-                                <label for="state">State</label>
-                                <select id="state" class="input-group">
-                                    <option>Alaska</option>
-                                    <option>Alabama</option>
-                                    <option>Arizona</option>
-                                    <option>Arkansas</option>
-                                    <option>California</option>
-                                    <option>Colorado</option>
-                                    <option>Connecticut</option>
+                                <label for="jsState">State</label>
+                                <select id="jsState" class="input-group">
+                                    <?php foreach (getStates() as $stateCode => $stateName) : ?>
+                                        <option value="<?= $stateCode; ?>"><?= $stateName; ?></option>
+                                    <?php endforeach; ?>
                                 </select>
 
                             </div>
                             <div class="input-group-address">
-                                <label for="zipcode">Zip Code</label>
+                                <label for="jsZipCode">Zip Code</label>
 
                                 <div class="input-group">
-                                    <input id="zipcode" type="text" Placeholder="94556">
+                                    <input id="jsZipCode" type="text" Placeholder="94556">
 
                                 </div>
                             </div>
+                            <div class="alert alert-danger jsErrorArea"></div>
 
                             <div class="input-group-address">
 
 
                                 <div class="input-group  no-border">
-                                    <input onclick="validate()" type="submit" value="Validate" class="btn validate_btn">
+                                    <input type="submit" value="Validate" class="btn validate_btn">
 
 
                                 </div>
@@ -126,27 +119,30 @@
 
                             <div class="dataLoad">
                                 <div id="original">
-                                    <p id="addressLine1">Address Line 1: 185 Berry St</p>
-                                    <p id="addressLine2">Address Line 2: STE 6100</p>
-                                    <p id="cityName">City: SAN FRANCISO</p>
-                                    <P id="stateName">State: CA</P>
-                                    <p id="zipCode">Zip Code: 94107</p>
+                                    <p>Address Line 1: <span id="jsOMAAddress"></span></p>
+                                    <p>Address Line 2: <span id="jsOMAAddress2"></span></p>
+                                    <p>City: <span id="jsOMACity"></span></p>
+                                    <P>State: <span id="jsOMAState"></span></P>
+                                    <p>Zip Code: <span id="jsOMAZipCode"></span></p>
                                 </div>
                                 <div id="standardized">
-                                    <p id="addressLine1">Address Line 1: Suite 6100</p>
-                                    <p id="addressLine2">Address Line 2: 185 Berry ST</p>
-                                    <p id="cityName">City: SAN FRANCISO</p>
-                                    <P id="stateName">State: CA</P>
-                                    <p id="zipCode">Zip Code: 94107</p>
+                                    <p>Address Line 1: <span id="jsSMAAddress"></span></p>
+                                    <p>Address Line 2: <span id="jsSMAAddress2"></span></p>
+                                    <p>City: <span id="jsSMACity"></span></p>
+                                    <P>State: <span id="jsSMAState"></span></P>
+                                    <p>Zip Code: <span id="jsSMAZipCode"></span></p>
                                 </div>
                             </div>
                         </div>
-                        <div class="alert alert-success">
-                            <span id="loginsuccessdiv">Address Saved Successfully!</span>
+
+                        <div class="alert alert-danger jsErrorAreaConfirm" id="">
+                        </div>
+                        <div class="alert alert-success jsSuccessAreaConfirm" id="">
+                            Address Saved Successfully!
                         </div>
                     </div>
                     <div class="modal-footer border-top-0 d-flex justify-content-end">
-                        <button type="submit" class="btn btn-success">Save</button>
+                        <button type="submit" class="btn btn-success jsSaveAddress">Save</button>
                     </div>
                 </form>
             </div>
@@ -157,7 +153,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.5.0/js/bootstrap4-toggle.min.js"></script>
-    <script src="<?= baseUrl('assets/js/app.js'); ?>"></script>
+    <script src="<?= baseUrl('assets/js/app.min.js'); ?>"></script>
 
 </body>
 

@@ -1,4 +1,4 @@
-<?php defined('PATH') OR die('NO DIRECT ACCESS');
+<?php defined('PATH') or die('NO DIRECT ACCESS');
 
 if (!function_exists('getStates')) {
     /**
@@ -10,7 +10,7 @@ if (!function_exists('getStates')) {
     {
         //
         return json_decode(
-            file_get_contents(base_url('assets/states.json')),
+            file_get_contents(baseUrl('assets/states.json')),
             true
         );
     }
@@ -92,30 +92,6 @@ if (!function_exists('getUserIP')) {
     }
 }
 
-
-if (!function_exists('connectToMySQLi')) {
-    /**
-     * Creates MySQLi connection
-     *
-     * @param string $host
-     * @param string $user
-     * @param string $pass
-     * @param string $db
-     * @return resource
-     */
-    function connectToMySQLi($host, $user, $pass, $db)
-    {
-        $mysqli = new mysqli($host, $user, $pass, $db);
-
-        if ($mysqli->connect_error) {
-
-            die('Connect Error (' . mysqli_connect_errno() . ') ' . mysqli_connect_error());
-        }
-        return $mysqli;
-    }
-}
-
-
 if (!function_exists('pd')) {
     /**
      * Prints data
@@ -150,9 +126,9 @@ if (!function_exists('parseUrl')) {
             return [];
         }
         //
-        return array_filter(explode('/', $url), function ($segment) {
+        return array_values(array_filter(explode('/', $url), function ($segment) {
             return empty($segment) ? false : true;
-        });
+        }));
     }
 }
 
@@ -165,11 +141,11 @@ if (!function_exists('loadPage')) {
     function loadPage(string $page)
     {
         //
-        if (!is_file(PATH . 'views/' . $page.'.php')) {
+        if (!is_file(PATH . 'views/' . $page . '.php')) {
             die('Page not found.');
         }
         //
-        require(PATH . 'views/' . $page.'.php');
+        require(PATH . 'views/' . $page . '.php');
     }
 }
 
@@ -182,6 +158,65 @@ if (!function_exists('baseUrl')) {
      */
     function baseUrl(string $url)
     {
-        return $_SERVER['REQUEST_SCHEME'].'://'.$_SERVER['HTTP_HOST'].'/'.$url;
+        return $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . '/' . $url;
+    }
+}
+
+if (!function_exists('getPost')) {
+    /**
+     * Gets the POST
+     *
+     * @return array
+     */
+    function getPost()
+    {
+        //
+        if (!$_POST) {
+            return [];
+        }
+        //
+        foreach ($_POST as $index => $value) {
+            //
+            $_POST[$index] = cleanString($value);
+        }
+        //
+        return $_POST;
+    }
+}
+
+if (!function_exists('cleanString')) {
+    /**
+     * Cleans the string
+     *
+     * @return string|array $data
+     * @return string
+     */
+    function cleanString($data)
+    {
+        //
+        if (is_array($data)) {
+            //
+            foreach ($data as $index => $value) {
+                //
+                $data[$index] = cleanString($value);
+            }
+        } else {
+            return strip_tags(trim($data));
+        }
+        //
+        return $data;
+    }
+}
+
+if (!function_exists('toCamelCase')) {
+    /**
+     * String to camel case
+     *
+     * @param string $str
+     * @return string
+     */
+    function toCamelCase(string $str)
+    {
+        return lcfirst(str_replace(' ', '', ucwords(str_replace('-', ' ', $str))));
     }
 }
