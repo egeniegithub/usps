@@ -1,6 +1,4 @@
-<?php
-
-
+<?php defined('PATH') OR die('NO DIRECT ACCESS');
 
 if (!function_exists('getStates')) {
     /**
@@ -95,10 +93,10 @@ if (!function_exists('getUserIP')) {
 }
 
 
-if(!function_exists('connectToMySQLi')){
+if (!function_exists('connectToMySQLi')) {
     /**
      * Creates MySQLi connection
-     * 
+     *
      * @param string $host
      * @param string $user
      * @param string $pass
@@ -108,11 +106,82 @@ if(!function_exists('connectToMySQLi')){
     function connectToMySQLi($host, $user, $pass, $db)
     {
         $mysqli = new mysqli($host, $user, $pass, $db);
-    
+
         if ($mysqli->connect_error) {
-    
+
             die('Connect Error (' . mysqli_connect_errno() . ') ' . mysqli_connect_error());
         }
         return $mysqli;
+    }
+}
+
+
+if (!function_exists('pd')) {
+    /**
+     * Prints data
+     *
+     * @param any $data
+     */
+    function pd($data)
+    {
+        echo '<pre>';
+        if (is_object($data)) {
+            var_dump($data);
+        } elseif (is_array($data)) {
+            print_r($data);
+        } else {
+            echo ($data);
+        }
+        echo '</pre>';
+    }
+}
+
+if (!function_exists('parseUrl')) {
+    /**
+     * Parse URL
+     *
+     * @param string $url
+     * @return array
+     */
+    function parseUrl(string $url)
+    {
+        //
+        if ($url == '/') {
+            return [];
+        }
+        //
+        return array_filter(explode('/', $url), function ($segment) {
+            return empty($segment) ? false : true;
+        });
+    }
+}
+
+if (!function_exists('loadPage')) {
+    /**
+     * Loads the page
+     *
+     * @param string $page
+     */
+    function loadPage(string $page)
+    {
+        //
+        if (!is_file(PATH . 'views/' . $page.'.php')) {
+            die('Page not found.');
+        }
+        //
+        require(PATH . 'views/' . $page.'.php');
+    }
+}
+
+if (!function_exists('baseUrl')) {
+    /**
+     * Gets the baseURL
+     *
+     * @param string $url
+     * @return string
+     */
+    function baseUrl(string $url)
+    {
+        return $_SERVER['REQUEST_SCHEME'].'://'.$_SERVER['HTTP_HOST'].'/'.$url;
     }
 }
